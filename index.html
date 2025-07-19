@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payne Glasses Pupil Height Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0a192f;
+            background-image: url('https://storage.googleapis.com/project-avatars/6874b0a17b83d82598853a5a.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { scrollbar-width: none; }
+        .tab-btn.active { color: #facc15; border-color: #facc15; }
+        .tab-btn { color: #94a3b8; border-color: transparent; }
+        .title-shadow {
+             text-shadow: 1px 1px 3px rgba(10, 25, 47, 0.9);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen font-sans py-12">
+    <div class="w-full max-w-4xl p-8 space-y-6 bg-slate-900/70 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700">
+        <div class="text-center mb-2">
+            <h1 class="text-3xl font-bold text-yellow-400 tracking-wider title-shadow">Payne Glasses</h1>
+            <p class="text-3xl font-bold text-yellow-400 tracking-wider">Pupil Height Calculator</p>
+        </div>
+        <div class="flex border-b border-slate-700">
+            <button id="tab1" class="tab-btn active flex-1 py-2 text-lg font-semibold text-center border-b-2 transition-colors duration-300" onclick="switchTab('calcProcessing')">Forward Calculation</button>
+            <button id="tab2" class="tab-btn flex-1 py-2 text-lg font-semibold text-center hover:text-yellow-300 border-b-2 transition-colors duration-300" onclick="switchTab('calcVerification')">Reverse & Verification</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 pt-4">
+            <!-- LEFT COLUMN: INPUTS -->
+            <div id="input-column" class="space-y-6">
+                <!-- FORWARD CALCULATION INPUTS -->
+                <div id="calcProcessing">
+                     <div>
+                        <h3 class="font-semibold text-lg text-yellow-400 border-b border-slate-700 pb-2 mb-4">1. Lens Type</h3>
+                        <div id="lensTypeContainer" class="mt-1 space-y-3 p-3 bg-slate-800/50 rounded-lg">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="lensType" value="progressive" checked class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500">
+                                <span id="progressive-label" class="ml-3 text-slate-200">Progressive, Round-Top &amp; Lineless Bifocal</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="lensType" value="flat_top" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500">
+                                <span id="flat-top-label" class="ml-3 text-slate-200">Flat-Top Bifocal</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-yellow-400 border-b border-slate-700 pb-2 mb-4">2. Frame Parameters</h3>
+                        <label for="bValue1" class="block text-md font-medium text-slate-300 mb-2">Frame Height (B) (mm)</label>
+                        <input type="number" id="bValue1" class="mt-1 block w-full px-4 py-3 bg-slate-800 border-slate-600 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400" placeholder="e.g., 38">
+                         <label class="block text-md font-medium text-slate-300 mt-4 mb-2">Frame Type</label>
+                        <div id="frameTypeContainer1" class="mt-1 space-y-3 p-3 bg-slate-800/50 rounded-lg">
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType1" value="with_le20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">With Nose Pads / Bridge ≤ 20</span></label>
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType1" value="with_gt20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">With Nose Pads / Bridge > 20</span></label>
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType1" value="without_le20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">Without Nose Pads / Bridge ≤ 20</span></label>
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType1" value="without_gt20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">Without Nose Pads / Bridge > 20</span></label>
+                        </div>
+                    </div>
+                    <div id="pupilPositionContainer">
+                         <h3 class="font-semibold text-lg text-yellow-400 border-b border-slate-700 pb-2 mb-4">3. Pupils Position</h3>
+                         <label for="v2Value" class="block text-md font-medium text-slate-300 mb-2">V2 Adjustment</label>
+                         <select id="v2Value" class="mt-1 block w-full px-4 py-3 bg-slate-800 border-slate-600 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400">
+                            <option value="0">0 (Standard)</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option>
+                        </select>
+                     </div>
+                </div>
+                <!-- REVERSE & VERIFICATION INPUTS -->
+                <div id="calcVerification" class="hidden space-y-6">
+                     <div>
+                        <h3 class="font-semibold text-lg text-yellow-400 border-b border-slate-700 pb-2 mb-4">1. Frame Parameters</h3>
+                        <label for="bValue2" class="block text-md font-medium text-slate-300 mb-2">Frame Height (B) (mm)</label>
+                        <input type="number" id="bValue2" class="mt-1 block w-full px-4 py-3 bg-slate-800 border-slate-600 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400" placeholder="e.g., 42">
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-yellow-400 border-b border-slate-700 pb-2 mb-4">2. Frame Type</h3>
+                         <div id="frameTypeContainer2" class="mt-1 space-y-3 p-3 bg-slate-800/50 rounded-lg">
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType2" value="with_le20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">With Nose Pads / Bridge ≤ 20</span></label>
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType2" value="with_gt20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">With Nose Pads / Bridge > 20</span></label>
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType2" value="without_le20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">Without Nose Pads / Bridge ≤ 20</span></label>
+                            <label class="flex items-center cursor-pointer"><input type="radio" name="frameType2" value="without_gt20" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500"><span class="ml-3 text-slate-200">Without Nose Pads / Bridge > 20</span></label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-yellow-400 border-b border-slate-700 pb-2 mb-4">3. Verification Parameters</h3>
+                        <div class="mt-1 space-y-3 p-3 bg-slate-800/50 rounded-lg">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="knownValue" value="knownSegHeight" checked class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500">
+                                <span class="ml-3 text-slate-200">Known: Lab Seg Height</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="knownValue" value="knownAssembleHeight" class="h-4 w-4 text-yellow-500 bg-slate-700 border-slate-600 focus:ring-yellow-500">
+                                <span class="ml-3 text-slate-200">Known: Assemble Height</span>
+                             </label>
+                        </div>
+                    </div>
+                    <div id="seg-height-input-container">
+                        <label for="processingHeight" class="block text-md font-medium text-slate-300 mb-2">Lab Seg Height (mm)</label>
+                        <input type="number" id="processingHeight" class="mt-1 block w-full px-4 py-3 bg-slate-800 border-slate-600 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400" placeholder="e.g., 25">
+                    </div>
+                     <div id="assemble-height-input-container" class="hidden">
+                        <label for="assembleHeightValue" class="block text-md font-medium text-slate-300 mb-2">Assemble Height</label>
+                        <select id="assembleHeightValue" class="mt-1 block w-full px-4 py-3 bg-slate-800 border-slate-600 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400">
+                            <option value="3">STD+3</option> <option value="2">STD+2</option> <option value="1">STD+1</option>
+                            <option value="0" selected>STD</option>
+                            <option value="-1">STD-1</option> <option value="-2">STD-2</option> <option value="-3">STD-3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: ACTION & RESULTS -->
+            <div id="output-column" class="flex flex-col mt-8 md:mt-0">
+                 <button onclick="calculate()" class="w-full py-3 px-4 text-lg font-bold text-slate-900 bg-yellow-400 rounded-lg hover:bg-yellow-300 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-yellow-400 transition-all duration-300 shadow-lg shadow-yellow-500/20">Calculate</button>
+                 <div id="result-container" class="mt-6 space-y-4">
+                     <div id="result-box-1" class="hidden p-4 bg-slate-800/50 border border-slate-700 rounded-lg text-center"><h3 class="font-semibold text-yellow-400" id="result-box-1-header"></h3><p id="result-processing" class="text-3xl font-bold text-white"></p><p id="result-note" class="text-sm text-slate-400 mt-1"></p></div>
+                     <div id="result-box-2" class="hidden p-4 bg-slate-800/50 border border-slate-700 rounded-lg text-center"><h3 class="font-semibold text-yellow-400" id="result-box-2-header"></h3><p id="result-assemble" class="text-3xl font-bold text-white"></p></div>
+                     <p id="error-text" class="text-lg font-semibold text-red-400 text-center"></p>
+                 </div>
+            </div>
+        </div>
+        <div class="text-center text-slate-500 text-xs pt-6 border-t border-slate-700"><p>Copyright &copy; Payne Glasses. V2.46</p></div>
+    </div>
+
+    <script>
+        let currentTab = 'calcProcessing';
+
+        function getStandardAssembleOffset(bValue, frameTypeVal) {
+            let baseRuleOffset = null;
+            switch (frameTypeVal) {
+                case 'with_le20': if (bValue > 0 && bValue <= 50) { baseRuleOffset = 0; } break;
+                case 'with_gt20':
+                    if (bValue > 0 && bValue <= 30) { baseRuleOffset = 0; } 
+                    else if (bValue <= 50) { baseRuleOffset = 1; }
+                    break;
+                case 'without_le20':
+                    if (bValue > 0 && bValue <= 37) { baseRuleOffset = 0; }
+                    else if (bValue <= 43) { baseRuleOffset = 1; }
+                    else if (bValue <= 50) { baseRuleOffset = 2; }
+                    break;
+                case 'without_gt20':
+                    if (bValue > 0 && bValue <= 37) { baseRuleOffset = 1; }
+                    else if (bValue <= 43) { baseRuleOffset = 2; }
+                    else if (bValue <= 50) { baseRuleOffset = 3; }
+                    break;
+            }
+            return baseRuleOffset;
+        }
+
+        function calculateProgressive(bValue, frameTypeVal, v2Selection) {
+            const baseRuleOffset = getStandardAssembleOffset(bValue, frameTypeVal);
+            if (baseRuleOffset === null) throw new Error("Frame height is outside the applicable range for this frame type.");
+            
+            const baseProcessingH = (bValue / 2) + 3 + baseRuleOffset;
+
+            let compensation = 0;
+            switch (v2Selection) { case '1': compensation = -1; break; case '3': compensation = 1; break; }
+            
+            const finalProcessingH = baseProcessingH + compensation;
+            const finalN = baseRuleOffset + compensation;
+            let finalAssembleH_Display = `STD${finalN === 0 ? '' : (finalN > 0 ? '+' : '') + finalN}`;
+            
+            return { processing: finalProcessingH, assemble: finalAssembleH_Display };
+        }
+        
+        function calculateFlatTop(bValue, frameTypeVal) {
+            let initialHeight = 0, ruleFound = false;
+            switch (frameTypeVal) {
+                case 'with_le20': if (bValue > 0 && bValue <= 50) { initialHeight = (bValue / 2) - 3; ruleFound = true; } break;
+                case 'with_gt20':
+                    if (bValue > 0 && bValue <= 37) { initialHeight = (bValue / 2) - 3; ruleFound = true; } 
+                    else if (bValue <= 50) { initialHeight = (bValue / 2) - 2; ruleFound = true; }
+                    break;
+                case 'without_le20':
+                    if (bValue > 0 && bValue <= 37) { initialHeight = (bValue / 2) - 3; ruleFound = true; } 
+                    else if (bValue <= 50) { initialHeight = (bValue / 2) - 2; ruleFound = true; }
+                    break;
+                case 'without_gt20':
+                    if (bValue > 0 && bValue <= 37) { initialHeight = (bValue / 2) - 2; ruleFound = true; } 
+                    else if (bValue <= 50) { initialHeight = (bValue / 2) - 1; ruleFound = true; }
+                    break;
+            }
+            if (!ruleFound) throw new Error("Frame height is outside the applicable range for this frame type.");
+            const finalHeight = Math.max(13, Math.min(19, initialHeight));
+            return { initial: initialHeight, final: finalHeight, wasClamped: initialHeight.toFixed(5) !== finalHeight.toFixed(5) };
+        }
+
+        function calculate() {
+            clearResult();
+            const errorText = document.getElementById('error-text');
+            try {
+                if (currentTab === 'calcProcessing') {
+                    // FORWARD CALCULATION LOGIC
+                    const bValue = parseFloat(document.getElementById('bValue1').value);
+                    if (isNaN(bValue) || bValue <= 0 || bValue > 50) throw new Error("Please enter a valid Frame Height between 1 and 50.");
+                    const frameType = document.querySelector('input[name="frameType1"]:checked');
+                    if (!frameType) throw new Error("Please select a Frame Type.");
+                    const lensType = document.querySelector('input[name="lensType"]:checked').value;
+                    
+                    if (lensType === 'flat_top') {
+                        const result = calculateFlatTop(bValue, frameType.value);
+                        const resultHeader = document.getElementById('result-box-1-header');
+                        const resultProcessing = document.getElementById('result-processing');
+                        
+                        resultHeader.textContent = 'Submirrors Height';
+                        resultProcessing.textContent = `${result.final.toFixed(2)} mm`;
+                        document.getElementById('result-note').textContent = result.wasClamped ? `Adjusted from ${result.initial.toFixed(2)} mm` : '';
+                        
+                        resultHeader.classList.remove('text-yellow-400');
+                        resultHeader.classList.add('text-red-400');
+                        resultProcessing.classList.remove('text-white');
+                        resultProcessing.classList.add('text-red-400');
+                        
+                        document.getElementById('result-box-1').classList.remove('hidden');
+                    } else {
+                        const v2Value = document.getElementById('v2Value').value;
+                        const result = calculateProgressive(bValue, frameType.value, v2Value);
+                        document.getElementById('result-box-1-header').textContent = 'Lab Seg Height';
+                        document.getElementById('result-processing').textContent = `${result.processing.toFixed(2)} mm`;
+                        document.getElementById('result-box-2-header').textContent = 'Assemble Height';
+                        document.getElementById('result-assemble').textContent = result.assemble;
+                        document.getElementById('result-box-1').classList.remove('hidden');
+                        document.getElementById('result-box-2').classList.remove('hidden');
+                    }
+                } else { // REVERSE & VERIFICATION LOGIC
+                    const bValue = parseFloat(document.getElementById('bValue2').value);
+                    if (isNaN(bValue) || bValue <= 0) throw new Error("Please enter a valid Frame Height.");
+                     const frameType = document.querySelector('input[name="frameType2"]:checked');
+                    if (!frameType) throw new Error("Please select a Frame Type.");
+
+                    const knownValue = document.querySelector('input[name="knownValue"]:checked').value;
+                    
+                    if (knownValue === 'knownSegHeight') {
+                        const processingHeight = parseFloat(document.getElementById('processingHeight').value);
+                        if (isNaN(processingHeight)) throw new Error("Please enter a valid Lab Seg Height.");
+                        
+                        const assembleHeightRaw = processingHeight - (bValue / 2) - 3;
+                        const assembleDisplay = `STD${assembleHeightRaw === 0 ? '' : (assembleHeightRaw > 0 ? '+' : '') + assembleHeightRaw.toFixed(2).replace(/\.00$/, '')}`;
+                        
+                        document.getElementById('result-box-1-header').textContent = 'Calculated Assemble Height';
+                        document.getElementById('result-processing').textContent = assembleDisplay;
+                        
+                        const standardOffset = getStandardAssembleOffset(bValue, frameType.value);
+                        if(standardOffset !== null) {
+                            const standardDisplay = `STD${standardOffset === 0 ? '' : (standardOffset > 0 ? '+' : '') + standardOffset}`;
+                            document.getElementById('result-note').textContent = `Note: The standard for this frame is ${standardDisplay}.`;
+                        }
+
+                        document.getElementById('result-box-1').classList.remove('hidden');
+                    
+                    } else { // knownAssembleHeight
+                        const assembleHeightN = parseInt(document.getElementById('assembleHeightValue').value);
+                        const calculatedSegHeight = (bValue / 2) + 3 + assembleHeightN;
+                        
+                        document.getElementById('result-box-1-header').textContent = 'Calculated Lab Seg Height';
+                        document.getElementById('result-processing').textContent = `${calculatedSegHeight.toFixed(2)} mm`;
+                        document.getElementById('result-box-1').classList.remove('hidden');
+                    }
+                }
+            } catch (e) {
+                errorText.textContent = e.message;
+            }
+        }
+        
+        function clearResult() {
+            document.getElementById('error-text').textContent = '';
+            document.getElementById('result-note').textContent = '';
+            ['result-box-1', 'result-box-2'].forEach(id => document.getElementById(id).classList.add('hidden'));
+
+            const resultHeader = document.getElementById('result-box-1-header');
+            resultHeader.classList.remove('text-red-400');
+            resultHeader.classList.add('text-yellow-400');
+
+            const resultProcessing = document.getElementById('result-processing');
+            resultProcessing.classList.remove('text-red-400');
+            resultProcessing.classList.add('text-white');
+        }
+
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.getElementById('calcProcessing').classList.toggle('hidden', tabId !== 'calcProcessing');
+            document.getElementById('calcVerification').classList.toggle('hidden', tabId !== 'calcVerification');
+            document.getElementById('tab1').classList.toggle('active', tabId === 'calcProcessing');
+            document.getElementById('tab2').classList.toggle('active', tabId === 'calcVerification');
+            clearResult();
+            if (tabId === 'calcProcessing') {
+                updateColorStates();
+            }
+        }
+
+        function updateColorStates() {
+            const isFlatTop = document.querySelector('input[name="lensType"]:checked').value === 'flat_top';
+            const flatTopLabel = document.getElementById('flat-top-label');
+            const progressiveLabel = document.getElementById('progressive-label');
+            
+            if (isFlatTop) {
+                flatTopLabel.classList.add('text-red-400');
+                flatTopLabel.classList.remove('text-slate-200');
+                progressiveLabel.classList.add('text-slate-200');
+                progressiveLabel.classList.remove('text-red-400');
+            } else {
+                flatTopLabel.classList.remove('text-red-400');
+                flatTopLabel.classList.add('text-slate-200');
+            }
+
+            document.querySelectorAll('input[name="frameType1"]').forEach(radio => {
+                const labelSpan = radio.nextElementSibling;
+                if (labelSpan) {
+                    if (isFlatTop && radio.checked) {
+                        labelSpan.classList.add('text-red-400');
+                        labelSpan.classList.remove('text-slate-200');
+                    } else {
+                        labelSpan.classList.remove('text-red-400');
+                        labelSpan.classList.add('text-slate-200');
+                    }
+                }
+            });
+        }
+        
+        document.querySelectorAll('input[name="lensType"], input[name="frameType1"], input[name="frameType2"]').forEach(elem => {
+            elem.addEventListener('change', function() {
+                const isFlatTop = document.querySelector('input[name="lensType"]:checked').value === 'flat_top';
+                document.getElementById('pupilPositionContainer').style.display = isFlatTop ? 'none' : 'block';
+                updateColorStates();
+                clearResult();
+            });
+        });
+
+        document.querySelectorAll('input[name="knownValue"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const isKnownSeg = this.value === 'knownSegHeight';
+                document.getElementById('seg-height-input-container').style.display = isKnownSeg ? 'block' : 'none';
+                document.getElementById('assemble-height-input-container').style.display = isKnownSeg ? 'none' : 'block';
+                clearResult();
+            });
+        });
+        
+        // Initialize on load
+        switchTab('calcProcessing');
+        const isKnownSegInitial = document.querySelector('input[name="knownValue"]:checked').value === 'knownSegHeight';
+        document.getElementById('seg-height-input-container').style.display = isKnownSegInitial ? 'block' : 'none';
+        document.getElementById('assemble-height-input-container').style.display = isKnownSegInitial ? 'none' : 'block';
+
+    </script>
+</body>
+</html>
